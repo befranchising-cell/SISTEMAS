@@ -30,7 +30,7 @@ function buildEvents(clientFilter, args, { from, to, types }) {
         FROM payments p
         LEFT JOIN collaborators c ON c.id = p.collaborator_id
         JOIN clients cl ON cl.id = p.client_id
-       WHERE ${clientFilter}${d.c}`).all(...args, ...d.a);
+       WHERE ${clientFilter.replace(/client_id/g, 'p.client_id')}${d.c}`).all(...args, ...d.a);
     for (const r of rows) {
       const kind = r.status === 'atrasado' ? 'pagamento_atrasado' : (r.status === 'pago' ? 'pagamento_pago' : 'pagamento');
       events.push({ type: 'pagamento', kind, id: `pay-${r.id}`, refId: r.id, date: r.date, title: `Pagamento: ${r.collaborator || 'Avulso'}`, status: r.status, amount: r.amount_planned, clientId: r.client_id, clientName: r.client_name });
