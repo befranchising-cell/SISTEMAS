@@ -1,0 +1,8 @@
+node_modules/
+data/*
+!data/.gitkeep
+*.log
+.DS_Store
+.env
+.jwt.secret
+.vault.key

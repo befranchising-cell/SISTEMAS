@@ -1,0 +1,25 @@
+{
+  "name": "gestao-consultoria",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Sistema multiempresa de gestão de clientes, colaboradores, pagamentos, rotinas e cofre de credenciais para consultorias.",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "seed": "node server/seed.js",
+    "dev": "node --watch server/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.8.1",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
