@@ -1,0 +1,2533 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Fornecedores — Classificação Financeira</title>
+<style>
+@font-face{font-family:'TT Firs Neue';font-style:normal;font-weight:300;font-display:swap;src:url(fonts/light.woff2) format('woff2')}
+@font-face{font-family:'TT Firs Neue';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/regular.woff2) format('woff2')}
+@font-face{font-family:'TT Firs Neue';font-style:normal;font-weight:500;font-display:swap;src:url(fonts/medium.woff2) format('woff2')}
+@font-face{font-family:'TT Firs Neue';font-style:normal;font-weight:600;font-display:swap;src:url(fonts/demibold.woff2) format('woff2')}
+@font-face{font-family:'TT Firs Neue';font-style:italic;font-weight:500;font-display:swap;src:url(fonts/mediumitalic.woff2) format('woff2')}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'TT Firs Neue','Segoe UI',Arial,sans-serif;-webkit-font-smoothing:antialiased;background:#eef3fa;color:#0e2338;padding:24px}
+.wrap{max-width:1280px;margin:0 auto}
+header{background:#1268c4;color:#fff;border-radius:14px;padding:22px 26px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px}
+header h1{font-size:20px;font-weight:600;letter-spacing:-.2px}
+header p{font-size:13px;color:#c6dcf7;margin-top:5px;font-weight:300}
+.marca{display:flex;align-items:center;gap:18px;flex:1 1 480px;min-width:0}
+.logo{width:56px;height:auto;flex:none}
+.marca-nome{display:flex;flex-direction:column;line-height:1.15}
+.marca-nome b{font-size:17px;font-weight:600;letter-spacing:.5px;color:#fff}
+.marca-nome span{font-size:9.5px;font-weight:500;letter-spacing:1.4px;text-transform:uppercase;color:#ffd500}
+.risco{width:1px;align-self:stretch;min-height:44px;background:rgba(255,255,255,.28)}
+.stats{display:flex;gap:22px;text-align:center;margin-left:auto}
+.stats div b{display:block;font-size:26px;font-weight:300;color:#ffd500;font-variant-numeric:tabular-nums}
+.stats div span{font-size:10.5px;color:#c6dcf7;text-transform:uppercase;letter-spacing:.5px;font-weight:500}
+.bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.bar input[type=search]{font-family:inherit;flex:1;min-width:240px;padding:11px 14px;border:1px solid #d3e0ef;border-radius:8px;font-size:14px;background:#fff}
+.btn{font-family:inherit;padding:11px 18px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-p{background:#0b3c74;color:#fff}
+.btn-s{background:#fff;color:#0b3c74;border:1px solid #d3e0ef}
+.btn-ok{background:#1fa850;color:#fff}
+.btn-ok:disabled{background:#e3ebf5;color:#93a5ba;cursor:default}
+.btn-ok:disabled:hover{opacity:1}
+.salvo{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#5a7089;white-space:nowrap}
+.salvo i{width:7px;height:7px;border-radius:99px;background:#1fa850;flex:none}
+.salvo.pend i{background:#e2a33c}
+.salvo.erro{color:#c0392b}
+.salvo.erro i{background:#c0392b}
+.btn:hover{opacity:.85}
+.progress{font-size:13px;color:#5a7089;white-space:nowrap}
+.abas{display:flex;background:#fff;border:1px solid #d3e0ef;border-radius:8px;overflow:hidden}
+.aba{font-family:inherit;padding:11px 16px;border:none;background:transparent;color:#0b3c74;font-size:13px;font-weight:500;cursor:pointer}
+.aba.on{background:#1268c4;color:#fff;font-weight:600}
+.tbl{background:#fff;border-radius:12px;overflow:auto;border:1px solid #e1e9f3;box-shadow:0 1px 4px rgba(11,60,116,.07)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:1080px}
+th{background:#0b3c74;color:#fff;text-align:left;padding:12px 14px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.6px;position:sticky;top:0}
+td{padding:9px 14px;border-bottom:1px solid #edf2f8;vertical-align:middle}
+tr:hover td{background:#f5f9fe}
+tr.ok td{background:#f1faf4}
+.num{text-align:right;white-space:nowrap}
+.forn{font-weight:600}
+.doc{font-family:Consolas,monospace;font-size:12px;white-space:nowrap}
+.val{color:#c0392b;font-weight:600}
+.mut{color:#adbccf}
+input.cat,input.desc{font-family:inherit;width:100%;padding:8px 10px;border:1px solid #d3e0ef;border-radius:6px;font-size:13px;color:#0e2338;background:#fff}
+input.cat{min-width:250px}
+input.desc{min-width:230px}
+input.cat:focus,input.desc:focus{outline:none;border-color:#1268c4;box-shadow:0 0 0 3px rgba(18,104,196,.15)}
+input.cat.filled{background:#edf9f1;border-color:#7fce97}
+/* --- painel de avanço --- */
+.painel{display:grid;grid-template-columns:minmax(240px,.85fr) 1.15fr 1.15fr;gap:12px;margin-bottom:14px}
+.pcard{background:#fff;border:1px solid #e1e9f3;border-radius:12px;padding:18px 20px;box-shadow:0 1px 4px rgba(11,60,116,.06);display:flex;flex-direction:column;gap:12px}
+.plabel{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#5a7089;font-weight:500}
+.pbig{display:flex;align-items:baseline;gap:8px;font-variant-numeric:tabular-nums}
+.pbig b{font-size:40px;font-weight:300;line-height:1;color:#0b3c74;letter-spacing:-1px}
+.pbig span{font-size:13px;color:#5a7089}
+.pbar{height:10px;background:#e3ebf5;border-radius:99px;overflow:hidden}
+.pbar i{display:block;height:100%;background:#1fa850;border-radius:99px;transition:width .25s ease}
+.psub{display:flex;flex-direction:column;gap:9px;border-top:1px solid #edf2f8;padding-top:13px;margin-top:auto}
+.psub div{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.psub span{font-size:10.5px;color:#8fa1b6;text-transform:uppercase;letter-spacing:.4px;font-weight:500}
+.psub b{font-size:15px;font-weight:600;color:#0e2338;font-variant-numeric:tabular-nums}
+.lista{display:flex;flex-direction:column;gap:9px;max-height:214px;overflow-y:auto;padding-right:4px}
+.lista::-webkit-scrollbar{width:6px}
+.lista::-webkit-scrollbar-thumb{background:#d3e0ef;border-radius:99px}
+.item{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:12.5px}
+.item .nm{color:#0e2338;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .qt{color:#5a7089;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12px}
+.item .tk{grid-column:1/-1;height:5px;background:#e9eff7;border-radius:99px;overflow:hidden}
+.item .tk i{display:block;height:100%;background:#1268c4;border-radius:99px}
+.pvazio{font-size:13px;color:#8fa1b6;padding:10px 0}
+.pmais{font-size:11.5px;color:#8fa1b6;padding-top:2px}
+@media(max-width:1000px){.painel{grid-template-columns:1fr}.lista{max-height:none}}
+footer{text-align:center;font-size:12px;color:#8fa1b6;margin-top:16px;font-style:italic;font-weight:500}
+@media print{.bar,header .stats{display:none}input{border:none}.painel,.pcard{break-inside:avoid}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="marca">
+    <svg class="logo" viewBox="0 0 100 118" role="img" aria-label="Bem Brasil — Associação de Benefícios">
+      <defs><polygon id="es" points="0.00,-10.00 2.41,-3.32 9.51,-3.09 3.90,1.27 5.88,8.09 0.00,4.10 -5.88,8.09 -3.90,1.27 -9.51,-3.09 -2.41,-3.32"></polygon></defs>
+      <g fill="#1fa850">
+        <use href="#es" transform="translate(20,32) scale(.42)"></use>
+        <use href="#es" transform="translate(32,19) scale(.62)"></use>
+        <use href="#es" transform="translate(50,13) scale(.82)"></use>
+        <use href="#es" transform="translate(68,19) scale(.62)"></use>
+        <use href="#es" transform="translate(80,32) scale(.42)"></use>
+      </g>
+      <path fill="#ffd500" d="M50 30c-14 0-25 2.6-31.5 5.2-2.2.9-3.5 2.9-3.5 5.3v27.9c0 17.5 13.8 32.6 35 44.6 21.2-12 35-27.1 35-44.6V40.5c0-2.4-1.3-4.4-3.5-5.3C75 32.6 64 30 50 30z"></path>
+      <path fill="#f0c400" d="M50 30c-3 0-5.9.1-8.6.4v82.1c2.7 1.6 5.6 3.1 8.6 4.5 3-1.4 5.9-2.9 8.6-4.5V30.4c-2.7-.3-5.6-.4-8.6-.4z"></path>
+    </svg>
+    <div class="marca-nome"><b>BEM BRASIL</b><span>Associação de Benefícios</span></div>
+    <div class="risco"></div>
+    <div>
+      <h1>Painel de Fornecedores — Classificação Financeira</h1>
+      <p>Extrato jan–fev/2026 · Fornecedores únicos extraídos dos lançamentos · Preencha categoria e descrição ao lado</p>
+    </div>
+  </div>
+  <div class="stats">
+    <div><b>241</b><span>Fornecedores</span></div>
+    <div><b>370</b><span>Lançamentos</span></div>
+    <div><b id="stFill">0</b><span>Classificados</span></div>
+  </div>
+</header>
+
+<section class="painel">
+  <div class="pcard">
+    <div class="plabel">Avanço da classificação</div>
+    <div class="pbig"><b id="pctForn">0%</b><span id="txtForn">0 de 241 fornecedores</span></div>
+    <div class="pbar"><i id="barForn" style="width:0%"></i></div>
+    <div class="psub">
+      <div><span>Lançamentos cobertos</span><b id="txtLanc">0 de 370</b></div>
+      <div><span>Fornecedores pendentes</span><b id="txtPend">241</b></div>
+      <div><span>Categorias usadas</span><b id="txtCats">0</b></div>
+    </div>
+  </div>
+  <div class="pcard">
+    <div class="plabel">Distribuição por grupo</div>
+    <div class="lista" id="grupos"></div>
+  </div>
+  <div class="pcard">
+    <div class="plabel">Categorias mais usadas</div>
+    <div class="lista" id="topcats"></div>
+  </div>
+</section>
+
+<div class="bar">
+  <input type="search" id="busca" placeholder="Buscar fornecedor ou CPF/CNPJ...">
+  <span class="progress" id="prog">0 de 241 preenchidos</span>
+  <div class="abas">
+    <button class="aba on" data-aba="todos" onclick="mudaAba('todos',this)">Todos</button>
+    <button class="aba" data-aba="pendentes" onclick="mudaAba('pendentes',this)">Pendentes</button>
+    <button class="aba" data-aba="classificados" onclick="mudaAba('classificados',this)">Classificados</button>
+  </div>
+  <button class="btn btn-ok" id="btnSalvar" onclick="salvaAgora()" disabled>Salvar alterações</button>
+  <span class="salvo" id="statusSalvo"><i></i><span id="statusTxt">Carregando…</span></span>
+  <button class="btn btn-p" id="btnExp" onclick="exportaCSV()">Exportar CSV</button>
+</div>
+
+<datalist id="cats">
+<option>1.1.1 Adesão de Associados</option>
+<option>1.1 Contribuições dos Associados</option>
+<option>1.2 Receitas Financeiras</option>
+<option>2.1.1 Indenizações Totais – Associados</option>
+<option>2.1.2 Indenizações Parciais – Associados</option>
+<option>2.1.3 Serviços Relacionados a Eventos</option>
+<option>2.1.4 Peças – Veículos associados</option>
+<option>2.1.5 Mão de Obra – Oficinas</option>
+<option>2.1.6 Despesas Administrativas de Eventos</option>
+<option>2.1.7 Redução Salvados – Associados</option>
+<option>2.1.8 Multas/Eventos</option>
+<option>2.2.1 Indenizações Totais – Terceiros</option>
+<option>2.2.2 Indenizações Parciais – Terceiros</option>
+<option>2.2.3 Acordos e Reembolsos</option>
+<option>2.2.4 Serviços Relacionados</option>
+<option>2.2.5 Reparos / Oficinas de Terceiros</option>
+<option>2.2.6 Custos Jurídicos e Extrajudiciais</option>
+<option>2.2.7 Redução Salvados – Terceiros</option>
+<option>2.2.8 Peças – Veículos de Terceiros</option>
+<option>2.3.1 Assistência 24h</option>
+<option>2.3.2 Guincho e Remoção</option>
+<option>2.3.3 Troca de Pneu</option>
+<option>2.3.4 Carga de Bateria</option>
+<option>2.3.5 Chaveiro</option>
+<option>2.3.6 Socorro Mecânico</option>
+<option>2.4.1 Compra de Rastreadores</option>
+<option>2.4.2 Instalação / Desinstalação</option>
+<option>2.4.3 Monitoramento Ativo</option>
+<option>2.4.4 Pronta Resposta / Central de Monitoramento</option>
+<option>3.1.1 Sindicância e Perícia Técnica</option>
+<option>3.1.2 Vistorias Prévias</option>
+<option>3.1.3 Diárias de Pátio</option>
+<option>3.1.4 Custo de Venda de Salvados</option>
+<option>3.1.5 Recuperação de Veículo</option>
+<option>3.1.6 Despachantes e Documentações</option>
+<option>3.2.1 Benefícios ao Associado</option>
+<option>3.2.2 Premiações e Bonificações</option>
+<option>3.2.3 Campanhas e Promoções</option>
+<option>3.2.4 Comissões sobre Renovação e Recorrência</option>
+<option>3.2.5 Associado Indicador</option>
+<option>3.3.1 Acordos Judiciais</option>
+<option>3.3.2 Condenações</option>
+<option>3.3.3 Custas Processuais</option>
+<option>3.3.4 Honorários Jurídicos</option>
+<option>3.3.5 Bloqueios Judiciais</option>
+<option>4.1.1 Salários e Ordenados</option>
+<option>4.1.2 13º Salário</option>
+<option>4.1.3 Férias</option>
+<option>4.1.4 Rescisões Trabalhistas</option>
+<option>4.1.5 Adiantamentos de Salário</option>
+<option>4.1.6 INSS sobre Folha</option>
+<option>4.1.7 FGTS</option>
+<option>4.1.8 Contribuição Sindical</option>
+<option>4.1.9 IRRF Retido</option>
+<option>4.1.10 Medicina Ocupacional</option>
+<option>4.1.11 Uniformes</option>
+<option>4.1.1.12 EPIs (Equipamentos de Proteção Individual)</option>
+<option>4.2.1 Vale Transporte</option>
+<option>4.2.2 Vale Alimentação</option>
+<option>4.2.3 Vale Refeição</option>
+<option>4.2.4 Vale Combustível</option>
+<option>4.2.5 Plano de Saúde</option>
+<option>4.2.6 Plano Odontológico</option>
+<option>4.2.7 Seguro de Vida</option>
+<option>4.2.8 Bolsa Estágio</option>
+<option>4.2.9 Prêmio de Assiduidade</option>
+<option>4.3.1 Contabilidade</option>
+<option>4.3.2 Jurídico</option>
+<option>4.3.3 Consultorias / Assessoria</option>
+<option>4.3.4 Serviços de TI / ERP</option>
+<option>4.3.5 Retenções sobre Serviços</option>
+<option>4.3.6 Honorários e Autônomos</option>
+<option>4.4.1 Premiação por Desempenho – Consultores</option>
+<option>4.4.2 Premiação por Desempenho – Colaboradores</option>
+<option>5.1.1 Material de Escritório</option>
+<option>5.1.2 Material de Limpeza</option>
+<option>5.1.3 Suprimentos de Informática</option>
+<option>5.1.4 Brindes e Confraternizações</option>
+<option>5.2.1 Manutenção Predial</option>
+<option>5.2.2 Conservação de Equipamentos</option>
+<option>5.2.3 Vigilância e Segurança</option>
+<option>5.2.4 Motoboy/Uber</option>
+<option>5.2.5 Locação de Veículos</option>
+<option>5.2.6 Obras e Reparos</option>
+<option>5.2.7 Despesas com Combustíveis</option>
+<option>5.2.8 Manutenção da Frota – Oficinas</option>
+<option>5.2.9 Peças – Veículos da frota</option>
+<option>5.2.10 Pedágios / Estacionamento</option>
+<option>5.2.11 Lava Jato – Veículos da Frota</option>
+<option>5.3.1 Aluguel de Imóvel</option>
+<option>5.3.2 Condomínio</option>
+<option>5.3.3 Energia Elétrica</option>
+<option>5.3.4 Água e Esgoto</option>
+<option>5.3.5 Internet, Telefonia, Domínio e Acesso</option>
+<option>5.3.6 IPTU / Seguro</option>
+<option>5.3.7 Multas de Frota</option>
+<option>5.4.1 Marketing Digital / Agência</option>
+<option>5.4.2 Design / Gráficos e Impressões</option>
+<option>5.4.3 Publicidade e Propaganda</option>
+<option>5.4.4 Eventos</option>
+<option>5.5.1 Honorário Contábil</option>
+<option>5.5.2 Consultorias</option>
+<option>5.5.3 Licenças de Uso / Software</option>
+<option>5.5.4 Locação de Equipamentos</option>
+<option>5.5.5 Correios</option>
+<option>5.5.6 Cartório</option>
+<option>5.5.7 Certificados Digitais e Serviços de Certificação</option>
+<option>6.1.1 PIS</option>
+<option>6.1.2 COFINS</option>
+<option>6.1.3 CSLL</option>
+<option>6.1.4 IRRF</option>
+<option>6.1.5 ISS</option>
+<option>6.2.1 COFINS sobre Aplicações</option>
+<option>6.2.2 Outras Taxas</option>
+<option>7.1.1 Juros sobre Financiamentos</option>
+<option>7.1.2 Juros sobre Empréstimos</option>
+<option>7.1.3 Multas e Mora</option>
+<option>7.1.4 Encargos sobre utilização do limite de crédito</option>
+<option>7.2.1 Tarifas de Boletos e TED/DOC</option>
+<option>7.2.2 Pacote Bancário</option>
+<option>7.2.3 Adquirência</option>
+<option>7.2.4 IOF</option>
+<option>7.2.5 Tarifas de Pix</option>
+<option>7.3.1 Financiamentos</option>
+<option>7.3.2 Empréstimos</option>
+<option>7.3.3 Capitalização</option>
+<option>7.3.4 Estornos</option>
+<option>8.1.1 Aplicações</option>
+<option>8.1.2 Resgates</option>
+<option>8.1.3 Rendimentos</option>
+<option>8.2.1 Veículos</option>
+<option>8.2.2 Imóveis</option>
+<option>8.2.3 Máquinas e Equipamentos</option>
+<option>8.2.4 Móveis e Utensílios</option>
+<option>8.2.5 Equipamentos de Informática</option>
+<option>9.1.1 Taxa de Administração</option>
+<option>9.1.2 Serviços da Administradora</option>
+<option>9.2.1 Demais Serviços</option>
+<option>9.2.2 Call Center</option>
+<option>9.2.3 Reembolso Interno</option>
+<option>9.2.4 Despesas Gerais Diretoria</option>
+<option>9.2.5 Transferência entre contas</option>
+<option>9.2.6 Aportes e Movimentações Financeiras</option>
+<option>10.1 Devoluções de Adesão</option>
+<option>10.2 Devolução de Contribuição Mensal</option>
+<option>10.3 Devolução de Salvados</option>
+<option>10.4 Devolução de Cota de Participação</option>
+</datalist>
+
+<div class="tbl">
+<table id="tabela">
+<thead><tr>
+<th style="width:40px">#</th>
+<th>Fornecedor</th>
+<th>CPF / CNPJ</th>
+<th style="width:50px">Qtd</th>
+<th>Categoria financeira</th>
+<th>Descrição</th>
+</tr></thead>
+<tbody>
+<tr data-busca="a casagrande   instal ">
+<td class="num">1</td>
+<td class="forn">A CASAGRANDE   INSTAL</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="a nossa grafica ltda ">
+<td class="num">2</td>
+<td class="forn">A NOSSA GRAFICA LTDA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="5.4.2 Design / Gráficos e Impressões"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="adalto cesar prado 21 ">
+<td class="num">3</td>
+<td class="forn">ADALTO CESAR PRADO 21</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="admilson ribeiro ">
+<td class="num">4</td>
+<td class="forn">Admilson Ribeiro</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="alan de brito cardoso ">
+<td class="num">5</td>
+<td class="forn">ALAN DE BRITO CARDOSO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.1.1 Indenizações Totais – Associados"></td>
+<td><input class="desc" placeholder="Descrição" value="VERIFICAR SE É ASSOCIADO OU TERCEIRO"></td>
+</tr>
+<tr data-busca="alexandre alves da si ">
+<td class="num">6</td>
+<td class="forn">ALEXANDRE ALVES DA SI</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="alexandre faria estor ">
+<td class="num">7</td>
+<td class="forn">ALEXANDRE FARIA ESTOR</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="alexandre santos de s ">
+<td class="num">8</td>
+<td class="forn">ALEXANDRE SANTOS DE S</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="alpha car ">
+<td class="num">9</td>
+<td class="forn">ALPHA CAR</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.3.1 Assistência 24h"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="americo de almeida fi ">
+<td class="num">10</td>
+<td class="forn">AMERICO DE ALMEIDA FI</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="ana paula 54.179.467 (raiz cnpj)">
+<td class="num">11</td>
+<td class="forn">ANA PAULA</td>
+<td class="doc">54.179.467 (raiz CNPJ)</td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="ana paula s marques f ">
+<td class="num">12</td>
+<td class="forn">ANA PAULA S MARQUES F</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="anderson doval alves ">
+<td class="num">13</td>
+<td class="forn">ANDERSON DOVAL ALVES</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.1.1 Indenizações Totais – Associados"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="andre fernandes belch ">
+<td class="num">14</td>
+<td class="forn">ANDRE FERNANDES BELCH</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="angelo ram 42.232.111 (raiz cnpj)">
+<td class="num">15</td>
+<td class="forn">ANGELO RAM</td>
+<td class="doc">42.232.111 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="antonio brandao junio ">
+<td class="num">16</td>
+<td class="forn">ANTONIO BRANDAO JUNIO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="antonio de almeida sa ">
+<td class="num">17</td>
+<td class="forn">ANTONIO DE ALMEIDA SA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="auto center maresound ">
+<td class="num">18</td>
+<td class="forn">AUTO CENTER MARESOUND</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="auto eletrica bolao ">
+<td class="num">19</td>
+<td class="forn">AUTO ELETRICA BOLAO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.4.3 Monitoramento Ativo"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="auto forte monitorame ">
+<td class="num">20</td>
+<td class="forn">AUTO FORTE MONITORAME</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="auto mecanica salles ">
+<td class="num">21</td>
+<td class="forn">AUTO MECANICA SALLES</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">3</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.1.5 Mão de Obra – Oficinas"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="auto pecas provisao l ">
+<td class="num">22</td>
+<td class="forn">AUTO PECAS PROVISAO L</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.1.4 Peças – Veículos associados"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="auto socorro j ca ">
+<td class="num">23</td>
+<td class="forn">AUTO SOCORRO J CA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.3.2 Guincho e Remoção"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="auto socorro trevo de ">
+<td class="num">24</td>
+<td class="forn">AUTO SOCORRO TREVO DE</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.3.2 Guincho e Remoção"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="automotive center ">
+<td class="num">25</td>
+<td class="forn">AUTOMOTIVE CENTER</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.1.5 Mão de Obra – Oficinas"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="banco votorantim s.a. ">
+<td class="num">26</td>
+<td class="forn">BANCO VOTORANTIM S.A.</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.1.1 Indenizações Totais – Associados"></td>
+<td><input class="desc" placeholder="Descrição" value="VERIFICAR SE FOI TERCEIRO"></td>
+</tr>
+<tr data-busca="beatriz de jesus trin ">
+<td class="num">27</td>
+<td class="forn">Beatriz de Jesus Trin</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="beatriz inocencio dos ">
+<td class="num">28</td>
+<td class="forn">BEATRIZ INOCENCIO DOS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="benn ">
+<td class="num">29</td>
+<td class="forn">BENN</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="bortolotti t e ltda ">
+<td class="num">30</td>
+<td class="forn">BORTOLOTTI T E LTDA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="bruno de oliveira pau ">
+<td class="num">31</td>
+<td class="forn">BRUNO DE OLIVEIRA PAU</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">8</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="c a t gomes servicos ">
+<td class="num">32</td>
+<td class="forn">C A T GOMES SERVICOS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.1.5 Mão de Obra – Oficinas"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="c r a reforme car ltd ">
+<td class="num">33</td>
+<td class="forn">C R A REFORME CAR LTD</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.1.5 Mão de Obra – Oficinas"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="car center marica ltd ">
+<td class="num">34</td>
+<td class="forn">CAR CENTER MARICA LTD</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.3.2 Guincho e Remoção"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="car equipadora e moni ">
+<td class="num">35</td>
+<td class="forn">CAR EQUIPADORA E MONI</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.3.2 Guincho e Remoção"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="carlos alberto ramos ">
+<td class="num">36</td>
+<td class="forn">CARLOS ALBERTO RAMOS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="carlos edu 35.621.392 (raiz cnpj)">
+<td class="num">37</td>
+<td class="forn">CARLOS EDU</td>
+<td class="doc">35.621.392 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="carlos henrique santa ">
+<td class="num">38</td>
+<td class="forn">CARLOS HENRIQUE SANTA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="catia gomes dos santo ">
+<td class="num">39</td>
+<td class="forn">Catia Gomes dos Santo</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="cibele oli 49.910.753 (raiz cnpj)">
+<td class="num">40</td>
+<td class="forn">CIBELE OLI</td>
+<td class="doc">49.910.753 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="claina sa de castro ">
+<td class="num">41</td>
+<td class="forn">CLAINA SA DE CASTRO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="claudia lima do carmo ">
+<td class="num">42</td>
+<td class="forn">CLAUDIA LIMA DO CARMO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="claudio he 59.969.396 (raiz cnpj)">
+<td class="num">43</td>
+<td class="forn">CLAUDIO HE</td>
+<td class="doc">59.969.396 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="cls import ">
+<td class="num">44</td>
+<td class="forn">CLS IMPORT</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="colorprint servicos g ">
+<td class="num">45</td>
+<td class="forn">COLORPRINT SERVICOS G</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="5.4.2 Design / Gráficos e Impressões"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="d.g motocraft ltda ">
+<td class="num">46</td>
+<td class="forn">D.G MOTOCRAFT LTDA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="2.1.5 Mão de Obra – Oficinas"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="daniele cristina pena ">
+<td class="num">47</td>
+<td class="forn">DANIELE CRISTINA PENA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira" value="3.2.4 Comissões sobre Renovação e Recorrência"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="david orel de oliveir ">
+<td class="num">48</td>
+<td class="forn">DAVID OREL DE OLIVEIR</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="debi veic indenigrt2026 qut0d47 ">
+<td class="num">49</td>
+<td class="forn">DEBI VEIC INDENIGRT2026 QUT0D47</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="debi veic indeniz kcs3j53 ">
+<td class="num">50</td>
+<td class="forn">DEBI VEIC INDENIZ KCS3J53</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="debit veic indeniz lto4e59 frota ">
+<td class="num">51</td>
+<td class="forn">DEBIT VEIC INDENIZ LTO4E59 FROTA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="debito veic indeniz kcs3j53 grt ">
+<td class="num">52</td>
+<td class="forn">DEBITO VEIC INDENIZ KCS3J53 GRT</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="debito veic indeniz lpg3756 ">
+<td class="num">53</td>
+<td class="forn">DEBITO VEIC INDENIZ LPG3756</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="debito veic indeniz lpg3756- ">
+<td class="num">54</td>
+<td class="forn">DEBITO VEIC INDENIZ LPG3756-</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="debito veic indenizado lpg3756 ">
+<td class="num">55</td>
+<td class="forn">DEBITO VEIC INDENIZADO LPG3756</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="debitveic indeniz lto4e59 frota ">
+<td class="num">56</td>
+<td class="forn">DEBITVEIC INDENIZ LTO4E59 FROTA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="derliany colares da s ">
+<td class="num">57</td>
+<td class="forn">DERLIANY COLARES DA S</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="dp serv e assistencia ">
+<td class="num">58</td>
+<td class="forn">DP SERV E ASSISTENCIA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="duda 2 placas frota lpg3756 ">
+<td class="num">59</td>
+<td class="forn">DUDA 2 PLACAS FROTA LPG3756</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="duda baixa kxm6f35 frota ">
+<td class="num">60</td>
+<td class="forn">DUDA BAIXA KXM6F35 FROTA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="duda emplforalocal frota lpg3756 ">
+<td class="num">61</td>
+<td class="forn">DUDA EMPLFORALOCAL FROTA LPG3756</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="dyenifer p 32.103.727 (raiz cnpj)">
+<td class="num">62</td>
+<td class="forn">DYENIFER P</td>
+<td class="doc">32.103.727 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="déb.conv.demais empresas ">
+<td class="num">63</td>
+<td class="forn">DÉB.CONV.DEMAIS EMPRESAS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="déb.conv.en.elétrica e gás ">
+<td class="num">64</td>
+<td class="forn">DÉB.CONV.EN.ELÉTRICA E GÁS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">24</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="déb.conv.telecomunicações ">
+<td class="num">65</td>
+<td class="forn">DÉB.CONV.TELECOMUNICAÇÕES</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="déb.tit.compe efetivado ">
+<td class="num">66</td>
+<td class="forn">DÉB.TIT.COMPE EFETIVADO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="déb.transf.contas dif.tit. intercredis - fav.: p h de oliveira prestadora de serv|transferência pix|bem brasil associacao de beneficios mutu|41.505.105 0001-80| ">
+<td class="num">67</td>
+<td class="forn">DÉB.TRANSF.CONTAS DIF.TIT. INTERCREDIS - FAV.: P H DE OLIVEIRA PRESTADORA DE SERV|TRANSFERÊNCIA PIX|BEM BRASIL ASSOCIACAO DE BENEFICIOS MUTU|41.505.105 0001-80|</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="débito pacote serviços ">
+<td class="num">68</td>
+<td class="forn">DÉBITO PACOTE SERVIÇOS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="edenred payments bras ">
+<td class="num">69</td>
+<td class="forn">EDENRED PAYMENTS BRAS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="eliana cristina de ol ">
+<td class="num">70</td>
+<td class="forn">ELIANA CRISTINA DE OL</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="elizabeth cristina sa ">
+<td class="num">71</td>
+<td class="forn">Elizabeth Cristina Sa</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="elvete bezerra de fre ">
+<td class="num">72</td>
+<td class="forn">Elvete Bezerra de Fre</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="emerson dos santos fe ">
+<td class="num">73</td>
+<td class="forn">EMERSON DOS SANTOS FE</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">3</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="empresa brasileira de ">
+<td class="num">74</td>
+<td class="forn">EMPRESA BRASILEIRA DE</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="erj detran rj ">
+<td class="num">75</td>
+<td class="forn">ERJ DETRAN RJ</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="fabiano carraro matos ">
+<td class="num">76</td>
+<td class="forn">FABIANO CARRARO MATOS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="felipe de oliveira mo ">
+<td class="num">77</td>
+<td class="forn">Felipe de Oliveira Mo</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">8</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="fernando marcos costa ">
+<td class="num">78</td>
+<td class="forn">FERNANDO MARCOS COSTA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="fix car recuperadora ">
+<td class="num">79</td>
+<td class="forn">FIX CAR RECUPERADORA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="flavia marques nitzsc ">
+<td class="num">80</td>
+<td class="forn">FLAVIA MARQUES NITZSC</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="flavio teixeira da co ">
+<td class="num">81</td>
+<td class="forn">FLAVIO TEIXEIRA DA CO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="flávio gomes cardoso ">
+<td class="num">82</td>
+<td class="forn">Flávio Gomes Cardoso</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="frota grt 2024 srj3j04 ">
+<td class="num">83</td>
+<td class="forn">FROTA GRT 2024 SRJ3J04</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="frota grt 2025 srj3j04 ">
+<td class="num">84</td>
+<td class="forn">FROTA GRT 2025 SRJ3J04</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="frota grt2026 kwr8a28 ">
+<td class="num">85</td>
+<td class="forn">FROTA GRT2026 KWR8A28</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="frota multa srj3j04 ">
+<td class="num">86</td>
+<td class="forn">FROTA MULTA SRJ3J04</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="full ">
+<td class="num">87</td>
+<td class="forn">FULL</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="gabriel freitas ribei ">
+<td class="num">88</td>
+<td class="forn">GABRIEL FREITAS RIBEI</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="gabriel mi 51.140.524 (raiz cnpj)">
+<td class="num">89</td>
+<td class="forn">GABRIEL MI</td>
+<td class="doc">51.140.524 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="hayasa comercio e ser ">
+<td class="num">90</td>
+<td class="forn">HAYASA COMERCIO E SER</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="hd diesel ">
+<td class="num">91</td>
+<td class="forn">HD DIESEL</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="hugo matheus caetano ">
+<td class="num">92</td>
+<td class="forn">HUGO MATHEUS CAETANO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="hugo ximen 12.375.970 (raiz cnpj)">
+<td class="num">93</td>
+<td class="forn">HUGO XIMEN</td>
+<td class="doc">12.375.970 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="i r motors ">
+<td class="num">94</td>
+<td class="forn">I R MOTORS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="igor marti 57.215.040 (raiz cnpj)">
+<td class="num">95</td>
+<td class="forn">IGOR MARTI</td>
+<td class="doc">57.215.040 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="infinity servicos de ">
+<td class="num">96</td>
+<td class="forn">INFINITY SERVICOS DE</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="inovart servicos auto ">
+<td class="num">97</td>
+<td class="forn">INOVART SERVICOS AUTO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="isaias rodrigues da s ">
+<td class="num">98</td>
+<td class="forn">ISAIAS RODRIGUES DA S</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="j. do n. motta autope ">
+<td class="num">99</td>
+<td class="forn">J. DO N. MOTTA AUTOPE</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="jacqueline 52.167.411 (raiz cnpj)">
+<td class="num">100</td>
+<td class="forn">JACQUELINE</td>
+<td class="doc">52.167.411 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="jades toledo de paula ">
+<td class="num">101</td>
+<td class="forn">JADES TOLEDO DE PAULA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="jeffersson da costa r ">
+<td class="num">102</td>
+<td class="forn">JEFFERSSON DA COSTA R</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">3</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="jfc tecnologia eletro ">
+<td class="num">103</td>
+<td class="forn">JFC TECNOLOGIA ELETRO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="jl servicos de rastre ">
+<td class="num">104</td>
+<td class="forn">JL SERVICOS DE RASTRE</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="joao carlos julianell ">
+<td class="num">105</td>
+<td class="forn">JOAO CARLOS JULIANELL</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="joao pedro 61.855.077 (raiz cnpj)">
+<td class="num">106</td>
+<td class="forn">JOAO PEDRO</td>
+<td class="doc">61.855.077 (raiz CNPJ)</td>
+<td class="num">5</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="jocirene silva dos sa ">
+<td class="num">107</td>
+<td class="forn">JOCIRENE SILVA DOS SA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="jose carlos souza da ">
+<td class="num">108</td>
+<td class="forn">JOSE CARLOS SOUZA DA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="joseilton pereira da ">
+<td class="num">109</td>
+<td class="forn">JOSEILTON PEREIRA DA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="joão victor da silva ">
+<td class="num">110</td>
+<td class="forn">João Victor da Silva</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="julio fernandes de ol ">
+<td class="num">111</td>
+<td class="forn">JULIO FERNANDES DE OL</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="l c b cardoso transpo ">
+<td class="num">112</td>
+<td class="forn">L C B CARDOSO TRANSPO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="l g diesel ltda ">
+<td class="num">113</td>
+<td class="forn">L G DIESEL LTDA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="lc solucoes ">
+<td class="num">114</td>
+<td class="forn">LC SOLUCOES</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="leandro antonio pauli ">
+<td class="num">115</td>
+<td class="forn">Leandro Antonio Pauli</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="leonardo f 61.854.777 (raiz cnpj)">
+<td class="num">116</td>
+<td class="forn">LEONARDO F</td>
+<td class="doc">61.854.777 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="leonardo oliveira lem ">
+<td class="num">117</td>
+<td class="forn">LEONARDO OLIVEIRA LEM</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">5</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="leoni pere 21.072.096 (raiz cnpj)">
+<td class="num">118</td>
+<td class="forn">LEONI PERE</td>
+<td class="doc">21.072.096 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="leticia lima de souza ">
+<td class="num">119</td>
+<td class="forn">LETICIA LIMA DE SOUZA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="logauto transportador ">
+<td class="num">120</td>
+<td class="forn">LOGAUTO TRANSPORTADOR</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="luciano batista de al ">
+<td class="num">121</td>
+<td class="forn">LUCIANO BATISTA DE AL</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="luciano de oliveira ">
+<td class="num">122</td>
+<td class="forn">LUCIANO DE OLIVEIRA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">4</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="luciene dos santos al ">
+<td class="num">123</td>
+<td class="forn">LUCIENE DOS SANTOS AL</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="luiz felipe 51.540.407 (raiz cnpj)">
+<td class="num">124</td>
+<td class="forn">LUIZ FELIPE</td>
+<td class="doc">51.540.407 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="luiz fernando cavalhe ">
+<td class="num">125</td>
+<td class="forn">Luiz Fernando Cavalhe</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="m4 produtos e servico ">
+<td class="num">126</td>
+<td class="forn">M4 PRODUTOS E SERVICO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="mad auto pecas ">
+<td class="num">127</td>
+<td class="forn">MAD AUTO PECAS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="mais mobi 1 cartao novo ">
+<td class="num">128</td>
+<td class="forn">MAIS MOBI 1 CARTAO NOVO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="mais mobi canc 1 cartao ">
+<td class="num">129</td>
+<td class="forn">MAIS MOBI CANC 1 CARTAO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="mais mobi servicos lt ">
+<td class="num">130</td>
+<td class="forn">MAIS MOBI SERVICOS LT</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="maluan veiculos ltda ">
+<td class="num">131</td>
+<td class="forn">MALUAN VEICULOS LTDA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="marcelo da silveira k ">
+<td class="num">132</td>
+<td class="forn">MARCELO DA SILVEIRA K</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="marcio douglas da sil ">
+<td class="num">133</td>
+<td class="forn">Marcio Douglas da Sil</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="marcos gui 51.138.909 (raiz cnpj)">
+<td class="num">134</td>
+<td class="forn">MARCOS GUI</td>
+<td class="doc">51.138.909 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="marcos lea 51.174.973 (raiz cnpj)">
+<td class="num">135</td>
+<td class="forn">MARCOS LEA</td>
+<td class="doc">51.174.973 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="marcos lean magalhaes ">
+<td class="num">136</td>
+<td class="forn">Marcos Lean Magalhaes</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="matheus rogerio dos s ">
+<td class="num">137</td>
+<td class="forn">Matheus Rogerio Dos S</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="mauricio rodrigues co ">
+<td class="num">138</td>
+<td class="forn">MAURICIO RODRIGUES CO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">12</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="mauricio rodrigues coelho ">
+<td class="num">139</td>
+<td class="forn">MAURICIO RODRIGUES COELHO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="mauricio santos batal ">
+<td class="num">140</td>
+<td class="forn">MAURICIO SANTOS BATAL</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="medd service - instal ">
+<td class="num">141</td>
+<td class="forn">MEDD SERVICE - INSTAL</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="mike vieira da silva ">
+<td class="num">142</td>
+<td class="forn">Mike Vieira da Silva</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="mirella oliveira olei ">
+<td class="num">143</td>
+<td class="forn">MIRELLA OLIVEIRA OLEI</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="mit rio veiculos ltda ">
+<td class="num">144</td>
+<td class="forn">MIT RIO VEICULOS LTDA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="multa frota ttv0f97 ">
+<td class="num">145</td>
+<td class="forn">MULTA FROTA TTV0F97</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="multa frota tty0i51 ">
+<td class="num">146</td>
+<td class="forn">MULTA FROTA TTY0I51</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="multidisplay comercio ">
+<td class="num">147</td>
+<td class="forn">MULTIDISPLAY COMERCIO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="negocio sobre rodas ">
+<td class="num">148</td>
+<td class="forn">NEGOCIO SOBRE RODAS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="nilson teixeira de go ">
+<td class="num">149</td>
+<td class="forn">NILSON TEIXEIRA DE GO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="osnilson fabbri da co ">
+<td class="num">150</td>
+<td class="forn">OSNILSON FABBRI DA CO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pablito&#x27;s car oficina ">
+<td class="num">151</td>
+<td class="forn">PABLITO&#x27;S CAR OFICINA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">5</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pagto eletron  cobranca debit veic indeniz srb6f63 ">
+<td class="num">152</td>
+<td class="forn">PAGTO ELETRON  COBRANCA DEBIT VEIC INDENIZ SRB6F63</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pagto eletron  cobranca debit veic indenizado srb6f63 ">
+<td class="num">153</td>
+<td class="forn">PAGTO ELETRON  COBRANCA DEBIT VEIC INDENIZADO SRB6F63</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pagto eletron  cobranca debito veic indeniz lus6a19 ">
+<td class="num">154</td>
+<td class="forn">PAGTO ELETRON  COBRANCA DEBITO VEIC INDENIZ LUS6A19</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pagto eletron  cobranca debito veic indenizado srb6f63 ">
+<td class="num">155</td>
+<td class="forn">PAGTO ELETRON  COBRANCA DEBITO VEIC INDENIZADO SRB6F63</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pagto eletron  cobranca debito veic indenizado ttt3f31 ">
+<td class="num">156</td>
+<td class="forn">PAGTO ELETRON  COBRANCA DEBITO VEIC INDENIZADO TTT3F31</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pagto eletron  cobranca debito veic indenizado tuj0d24 ">
+<td class="num">157</td>
+<td class="forn">PAGTO ELETRON  COBRANCA DEBITO VEIC INDENIZADO TUJ0D24</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pagto eletron  cobranca new onblock tags monitoramento ">
+<td class="num">158</td>
+<td class="forn">PAGTO ELETRON  COBRANCA NEW ONBLOCK TAGS MONITORAMENTO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pagto eletron  cobranca xande car pvg7j52 ">
+<td class="num">159</td>
+<td class="forn">PAGTO ELETRON  COBRANCA XANDE CAR PVG7J52</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pagto eletronico tributo internet --pm rio janeiro - rj ">
+<td class="num">160</td>
+<td class="forn">PAGTO ELETRONICO TRIBUTO INTERNET --PM RIO JANEIRO - RJ</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">5</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="patricia burque ">
+<td class="num">161</td>
+<td class="forn">PATRICIA BURQUE</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="paulo sergio oliveira ">
+<td class="num">162</td>
+<td class="forn">Paulo Sergio Oliveira</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="peter stuart mendonca ">
+<td class="num">163</td>
+<td class="forn">PETER STUART MENDONCA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="polska servico de lat ">
+<td class="num">164</td>
+<td class="forn">POLSKA SERVICO DE LAT</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">4</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="polyana ke 52.853.325 (raiz cnpj)">
+<td class="num">165</td>
+<td class="forn">POLYANA KE</td>
+<td class="doc">52.853.325 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="pro film ">
+<td class="num">166</td>
+<td class="forn">PRO FILM</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="r a franca solucoes i ">
+<td class="num">167</td>
+<td class="forn">R A FRANCA SOLUCOES I</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="r s equipadora ">
+<td class="num">168</td>
+<td class="forn">R S EQUIPADORA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="rafael ferreira alves ">
+<td class="num">169</td>
+<td class="forn">RAFAEL FERREIRA ALVES</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="rafaela de figueiredo ">
+<td class="num">170</td>
+<td class="forn">Rafaela de Figueiredo</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="raquel raissa da silv ">
+<td class="num">171</td>
+<td class="forn">RAQUEL RAISSA DA SILV</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="rebeca costa da silva ">
+<td class="num">172</td>
+<td class="forn">REBECA COSTA DA SILVA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="recuperadora de veicu ">
+<td class="num">173</td>
+<td class="forn">RECUPERADORA DE VEICU</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="ricardo he 59.522.552 (raiz cnpj)">
+<td class="num">174</td>
+<td class="forn">RICARDO HE</td>
+<td class="doc">59.522.552 (raiz CNPJ)</td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="roberta gleice martin ">
+<td class="num">175</td>
+<td class="forn">ROBERTA GLEICE MARTIN</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">3</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="robson dos 40.017.904 (raiz cnpj)">
+<td class="num">176</td>
+<td class="forn">ROBSON DOS</td>
+<td class="doc">40.017.904 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="rodolfo almeida de ar ">
+<td class="num">177</td>
+<td class="forn">RODOLFO ALMEIDA DE AR</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="ronald nun 61.062.463 (raiz cnpj)">
+<td class="num">178</td>
+<td class="forn">RONALD NUN</td>
+<td class="doc">61.062.463 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="ronaldo franca correi ">
+<td class="num">179</td>
+<td class="forn">RONALDO FRANCA CORREI</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="ronaldo rodrigues da ">
+<td class="num">180</td>
+<td class="forn">RONALDO RODRIGUES DA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="roque serafim dos anj ">
+<td class="num">181</td>
+<td class="forn">Roque Serafim dos Anj</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="samuel silva gomes ">
+<td class="num">182</td>
+<td class="forn">Samuel Silva Gomes</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="sefaz rj - secretaria ">
+<td class="num">183</td>
+<td class="forn">SEFAZ RJ - SECRETARIA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">16</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="sga veiculos e pecas ">
+<td class="num">184</td>
+<td class="forn">SGA VEICULOS E PECAS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="shayna akauan alves d ">
+<td class="num">185</td>
+<td class="forn">SHAYNA AKAUAN ALVES D</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="sidnei da silva claro ">
+<td class="num">186</td>
+<td class="forn">Sidnei Da Silva Claro</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="simao elias rodrigues ">
+<td class="num">187</td>
+<td class="forn">SIMAO ELIAS RODRIGUES</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="smc rastreadores e me ">
+<td class="num">188</td>
+<td class="forn">SMC RASTREADORES E ME</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="soberano auto pecas l ">
+<td class="num">189</td>
+<td class="forn">SOBERANO AUTO PECAS L</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">4</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="socorro bem presente ">
+<td class="num">190</td>
+<td class="forn">SOCORRO BEM PRESENTE</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="sos chaveiro e servic ">
+<td class="num">191</td>
+<td class="forn">SOS CHAVEIRO E SERVIC</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="sos passa quatro serv ">
+<td class="num">192</td>
+<td class="forn">SOS PASSA QUATRO SERV</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="sound master ">
+<td class="num">193</td>
+<td class="forn">SOUND MASTER</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="souza auto socorro lt ">
+<td class="num">194</td>
+<td class="forn">SOUZA AUTO SOCORRO LT</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="stefani lorrane do na ">
+<td class="num">195</td>
+<td class="forn">STEFANI LORRANE DO NA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="store veiculos ">
+<td class="num">196</td>
+<td class="forn">STORE VEICULOS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="sydney de 35.105.858 (raiz cnpj)">
+<td class="num">197</td>
+<td class="forn">SYDNEY DE</td>
+<td class="doc">35.105.858 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="t b laurindo transpor ">
+<td class="num">198</td>
+<td class="forn">T B LAURINDO TRANSPOR</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="t f p a assistencia e ">
+<td class="num">199</td>
+<td class="forn">T F P A ASSISTENCIA E</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="tarifa autoriz cobranca tit.bx.decurso prazo 00000048 ">
+<td class="num">200</td>
+<td class="forn">TARIFA AUTORIZ COBRANCA TIT.BX.DECURSO PRAZO 00000048</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="tarifa autoriz cobranca tit.bx.decurso prazo 00000072 ">
+<td class="num">201</td>
+<td class="forn">TARIFA AUTORIZ COBRANCA TIT.BX.DECURSO PRAZO 00000072</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="tarifa autoriz cobranca tit.bx.decurso prazo 00000076 ">
+<td class="num">202</td>
+<td class="forn">TARIFA AUTORIZ COBRANCA TIT.BX.DECURSO PRAZO 00000076</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="tarifa autoriz cobranca tit.bx.decurso prazo 00000177 ">
+<td class="num">203</td>
+<td class="forn">TARIFA AUTORIZ COBRANCA TIT.BX.DECURSO PRAZO 00000177</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="ted dif.titul.cc h.bank dest. derliany colares da ">
+<td class="num">204</td>
+<td class="forn">TED DIF.TITUL.CC H.BANK DEST. DERLIANY COLARES DA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="ted dif.titul.cc h.bank dest. moacir gomes da silv ">
+<td class="num">205</td>
+<td class="forn">TED DIF.TITUL.CC H.BANK DEST. MOACIR GOMES DA SILV</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="terror film e som ">
+<td class="num">206</td>
+<td class="forn">TERROR FILM E SOM</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="th transportes rj ltd ">
+<td class="num">207</td>
+<td class="forn">TH TRANSPORTES RJ LTD</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="thayline g 60.993.132 (raiz cnpj)">
+<td class="num">208</td>
+<td class="forn">THAYLINE G</td>
+<td class="doc">60.993.132 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="thiago pereira de sou ">
+<td class="num">209</td>
+<td class="forn">THIAGO PEREIRA DE SOU</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="thiago riodasostras monitorament ">
+<td class="num">210</td>
+<td class="forn">THIAGO RIODASOSTRAS MONITORAMENT</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="thor car ">
+<td class="num">211</td>
+<td class="forn">THOR CAR</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">3</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="transf cc para cc ariana elias genuario ">
+<td class="num">212</td>
+<td class="forn">TRANSF CC PARA CC ARIANA ELIAS GENUARIO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="transf cc para cc tupan assessoria &amp;amp; comunicacao d ">
+<td class="num">213</td>
+<td class="forn">TRANSF CC PARA CC TUPAN ASSESSORIA &amp;amp; COMUNICACAO D</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">3</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="transf.realizada pix sicoob - fav.: fast assist assistencia 24 horas l|transferência pix|bem brasil associacao de beneficios mutu|41.505.105 0001-80| ">
+<td class="num">214</td>
+<td class="forn">TRANSF.REALIZADA PIX SICOOB - FAV.: FAST ASSIST ASSISTENCIA 24 HORAS L|TRANSFERÊNCIA PIX|BEM BRASIL ASSOCIACAO DE BENEFICIOS MUTU|41.505.105 0001-80|</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="transportes ferrari ">
+<td class="num">215</td>
+<td class="forn">TRANSPORTES FERRARI</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="tuane ribe 59.564.977 (raiz cnpj)">
+<td class="num">216</td>
+<td class="forn">TUANE RIBE</td>
+<td class="doc">59.564.977 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="tuane ribeiro pinto ">
+<td class="num">217</td>
+<td class="forn">Tuane Ribeiro Pinto</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="twyx solucoes integra ">
+<td class="num">218</td>
+<td class="forn">TWYX SOLUCOES INTEGRA</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">4</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="valdirene roque de ol ">
+<td class="num">219</td>
+<td class="forn">Valdirene Roque de Ol</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="viseu autoparts ">
+<td class="num">220</td>
+<td class="forn">VISEU AUTOPARTS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="vitor gabr 62.395.714 (raiz cnpj)">
+<td class="num">221</td>
+<td class="forn">VITOR GABR</td>
+<td class="doc">62.395.714 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="vitoria araujo martin ">
+<td class="num">222</td>
+<td class="forn">VITORIA ARAUJO MARTIN</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="viviane brito da silv ">
+<td class="num">223</td>
+<td class="forn">VIVIANE BRITO DA SILV</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="washington garcia de ">
+<td class="num">224</td>
+<td class="forn">Washington Garcia de</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="way assistencia 24h l ">
+<td class="num">225</td>
+<td class="forn">WAY ASSISTENCIA 24H L</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">2</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="wendel lim 49.328.232 (raiz cnpj)">
+<td class="num">226</td>
+<td class="forn">wendel lim</td>
+<td class="doc">49.328.232 (raiz CNPJ)</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="wesley willian da sil ">
+<td class="num">227</td>
+<td class="forn">Wesley Willian da Sil</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="william dos santos lo ">
+<td class="num">228</td>
+<td class="forn">WILLIAM DOS SANTOS LO</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="william jefferson lim ">
+<td class="num">229</td>
+<td class="forn">WILLIAM JEFFERSON LIM</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="wj solucao veicular l ">
+<td class="num">230</td>
+<td class="forn">WJ SOLUCAO VEICULAR L</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca="wn rodas ">
+<td class="num">231</td>
+<td class="forn">WN RODAS</td>
+<td class="doc"><span class="mut">—</span></td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca=" ***.015.367-**">
+<td class="num">232</td>
+<td class="forn"><span class="mut">—</span></td>
+<td class="doc">***.015.367-**</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca=" ***.166.896-**">
+<td class="num">233</td>
+<td class="forn"><span class="mut">—</span></td>
+<td class="doc">***.166.896-**</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca=" ***.276.917-**">
+<td class="num">234</td>
+<td class="forn"><span class="mut">—</span></td>
+<td class="doc">***.276.917-**</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca=" 30.879.915/0001-80">
+<td class="num">235</td>
+<td class="forn"><span class="mut">—</span></td>
+<td class="doc">30.879.915/0001-80</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca=" 38.000.518/0001-06">
+<td class="num">236</td>
+<td class="forn"><span class="mut">—</span></td>
+<td class="doc">38.000.518/0001-06</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca=" 38.475.692/0001-05">
+<td class="num">237</td>
+<td class="forn"><span class="mut">—</span></td>
+<td class="doc">38.475.692/0001-05</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca=" 43.444.233/0001-96">
+<td class="num">238</td>
+<td class="forn"><span class="mut">—</span></td>
+<td class="doc">43.444.233/0001-96</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca=" 47.233.924/0001-00">
+<td class="num">239</td>
+<td class="forn"><span class="mut">—</span></td>
+<td class="doc">47.233.924/0001-00</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca=" 47.367.148/0001-22">
+<td class="num">240</td>
+<td class="forn"><span class="mut">—</span></td>
+<td class="doc">47.367.148/0001-22</td>
+<td class="num">1</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+<tr data-busca=" 53.752.893/0001-98">
+<td class="num">241</td>
+<td class="forn"><span class="mut">—</span></td>
+<td class="doc">53.752.893/0001-98</td>
+<td class="num">6</td>
+<td><input class="cat" list="cats" placeholder="Categoria financeira"></td>
+<td><input class="desc" placeholder="Descrição"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<footer>Documentos parciais ("raiz CNPJ") e nomes truncados vêm do próprio extrato bancário. O preenchimento é salvo ao clicar em Salvar alterações.</footer>
+</div>
+
+<script>
+var abaAtiva='todos';
+var TOTAL=241, KEY='painel_fornecedores_bembrasil_v2';
+var rows=[].slice.call(document.querySelectorAll('#tabela tbody tr'));
+
+var API='api/dados';
+var sujos={}, aplicando=false, salvando=false, relogio=null, modoLocal=false;
+
+/* rascunho local: rede de seguranca enquanto nao se clica em Salvar */
+function rascunho(){
+  try{
+    var d=rows.map(function(r){return[r.querySelector('.cat').value,r.querySelector('.desc').value]});
+    localStorage.setItem(KEY,JSON.stringify(d));
+  }catch(e){}
+}
+function leRascunho(){
+  try{
+    var d=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(!d)return false;
+    aplicando=true;
+    rows.forEach(function(r,i){
+      if(d[i]){r.querySelector('.cat').value=d[i][0]||'';r.querySelector('.desc').value=d[i][1]||'';}
+    });
+    aplicando=false;
+    return true;
+  }catch(e){aplicando=false;return false}
+}
+
+function estado(txt,classe){
+  var el=document.getElementById('statusSalvo');
+  el.className='salvo'+(classe?' '+classe:'');
+  document.getElementById('statusTxt').textContent=txt;
+}
+function hora(iso){
+  var d=iso?new Date(iso):new Date();
+  return d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+function pendentesDeSalvar(){
+  for(var k in sujos)if(sujos.hasOwnProperty(k))return true;
+  return false;
+}
+function marcaBotao(){
+  document.getElementById('btnSalvar').disabled=salvando||!pendentesDeSalvar();
+}
+function marcaSujo(linha){
+  if(aplicando)return;
+  sujos[rows.indexOf(linha)]=1;
+  estado('Alterações não salvas','pend');
+  marcaBotao();
+}
+
+function coleta(){
+  var itens={};
+  rows.forEach(function(r,i){
+    var c=r.querySelector('.cat').value.trim();
+    var d=r.querySelector('.desc').value.trim();
+    if(c||d)itens[i]={c:c,d:d};
+  });
+  return itens;
+}
+function aplica(itens){
+  if(!itens)return;
+  var foco=document.activeElement;
+  aplicando=true;
+  rows.forEach(function(r,i){
+    if(sujos[i])return;                       /* nao sobrescreve edicao local pendente */
+    var it=itens[i]||{c:'',d:''};
+    var c=r.querySelector('.cat'), d=r.querySelector('.desc');
+    if(c!==foco)c.value=it.c||'';
+    if(d!==foco)d.value=it.d||'';
+  });
+  aplicando=false;
+}
+function resumo(d){
+  if(!d.atualizadoEm)return 'Sincronizado — nada salvo ainda';
+  var quem=d.porQuem&&d.porQuem.indexOf('@')>0?d.porQuem.split('@')[0]:null;
+  return 'Sincronizado · última gravação '+(quem?('por '+quem+' '):'')+'às '+hora(d.atualizadoEm);
+}
+
+function buscaServidor(inicial){
+  return fetch(API,{headers:{accept:'application/json'},cache:'no-store'}).then(function(r){
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(function(d){
+    var vazio=!d.atualizadoEm||!d.itens||!Object.keys(d.itens).length;
+    if(vazio){
+      /* servidor ainda sem dados: preserva a classificacao que ja vem na pagina */
+      if(inicial){
+        rows.forEach(function(r,i){
+          if(r.querySelector('.cat').value.trim()||r.querySelector('.desc').value.trim())sujos[i]=1;
+        });
+        marcaBotao();
+        estado(pendentesDeSalvar()?'Nada salvo no servidor — clique em Salvar':'Conectado — nada salvo ainda','pend');
+      }
+      return;
+    }
+    aplica(d.itens);
+    atualiza();
+    if(!pendentesDeSalvar()&&!salvando)estado(resumo(d));
+  })['catch'](function(){
+    /* sem funcao de servidor (ex.: GitHub Pages): trabalha so neste navegador */
+    modoLocal=true;
+    if(relogio){clearInterval(relogio);relogio=null;}
+    if(inicial)estado(pendentesDeSalvar()?'Alterações não salvas':'As alterações ficam neste navegador');
+    marcaBotao();
+  });
+}
+
+function salvaAgora(){
+  if(salvando)return;
+  rascunho();
+  if(modoLocal){
+    sujos={};marcaBotao();
+    estado('Salvo neste navegador às '+hora());
+    return;
+  }
+  salvando=true;marcaBotao();
+  estado('Salvando…','pend');
+  fetch(API,{method:'PUT',headers:{'content-type':'application/json'},
+             body:JSON.stringify({itens:coleta()})}).then(function(r){
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(function(d){
+    sujos={};salvando=false;marcaBotao();
+    estado('Salvo para a equipe às '+hora(d.atualizadoEm));
+  })['catch'](function(){
+    salvando=false;marcaBotao();
+    estado('Não foi possível salvar. Rascunho mantido neste navegador.','erro');
+  });
+}
+
+function carrega(){
+  var temRascunho=leRascunho();
+  atualiza();
+  estado('Carregando…','pend');
+  if(temRascunho)rows.forEach(function(r,i){
+    if(r.querySelector('.cat').value.trim()||r.querySelector('.desc').value.trim())sujos[i]=1;
+  });
+  buscaServidor(true).then(marcaBotao);
+  /* mantem os navegadores em dia sem atrapalhar quem esta digitando */
+  relogio=setInterval(function(){
+    if(!modoLocal&&!pendentesDeSalvar()&&!salvando&&!document.hidden)buscaServidor(false);
+  },20000);
+  document.addEventListener('visibilitychange',function(){
+    if(!modoLocal&&!document.hidden&&!pendentesDeSalvar()&&!salvando)buscaServidor(false);
+  });
+}
+
+window.addEventListener('beforeunload',function(e){
+  if(pendentesDeSalvar()){e.preventDefault();e.returnValue=''}
+});
+var GRUPOS={'1':'Receitas','2':'Eventos e Assistência','3':'Regulação, Benefícios e Jurídico','4':'Pessoal e Encargos','5':'Despesas Administrativas','6':'Tributos','7':'Despesas Financeiras','8':'Investimentos e Imobilizado','9':'Administradora e Outros','10':'Devoluções'};
+
+function qtdDe(r){return parseInt(r.querySelectorAll('td')[3].textContent,10)||0}
+function pct(parte,todo){return todo?(parte*100/todo):0}
+function fmtPct(v){return (v>=10?v.toFixed(0):v.toFixed(1).replace('.',',')) + '%'}
+
+function atualiza(){
+  var n=0,lanc=0,totLanc=0,grupos={},cats={};
+  rows.forEach(function(r){
+    var c=r.querySelector('.cat');
+    var v=c.value.trim();
+    var ok=v!=='';
+    c.classList.toggle('filled',ok);
+    r.classList.toggle('ok',ok);
+    var q=qtdDe(r);
+    totLanc+=q;
+    if(!ok)return;
+    n++;lanc+=q;
+    var m=/^(\d+)/.exec(v);
+    var g=m?(m[1]+' · '+(GRUPOS[m[1]]||'Outros')):'Sem código de conta';
+    grupos[g]=(grupos[g]||0)+1;
+    cats[v]=(cats[v]||0)+1;
+  });
+
+  document.getElementById('prog').textContent=n+' de '+TOTAL+' preenchidos';
+  document.getElementById('stFill').textContent=n;
+
+  var p=pct(n,TOTAL);
+  document.getElementById('pctForn').textContent=fmtPct(p);
+  document.getElementById('barForn').style.width=p.toFixed(2)+'%';
+  document.getElementById('txtForn').textContent='de '+TOTAL+' fornecedores classificados';
+  document.getElementById('txtLanc').textContent=lanc+' de '+totLanc+' ('+fmtPct(pct(lanc,totLanc))+')';
+  document.getElementById('txtPend').textContent=(TOTAL-n)+' restantes';
+  document.getElementById('txtCats').textContent=Object.keys(cats).length;
+
+  desenha('grupos',ordena(grupos),n,99);
+  desenha('topcats',ordena(cats),n,8);
+}
+
+function ordena(obj){
+  return Object.keys(obj).map(function(k){return[k,obj[k]]})
+    .sort(function(a,b){return b[1]-a[1]||a[0].localeCompare(b[0],'pt-BR')});
+}
+
+function desenha(id,lista,total,limite){
+  var box=document.getElementById(id);
+  box.textContent='';
+  if(!lista.length){
+    var vazio=document.createElement('div');
+    vazio.className='pvazio';
+    vazio.textContent='Nenhum fornecedor classificado ainda.';
+    box.appendChild(vazio);
+    return;
+  }
+  var topo=lista.slice(0,limite);
+  var maior=topo[0][1];
+  topo.forEach(function(par){
+    var it=document.createElement('div');it.className='item';
+    var nm=document.createElement('div');nm.className='nm';nm.textContent=par[0];nm.title=par[0];
+    var qt=document.createElement('div');qt.className='qt';
+    qt.textContent=par[1]+' · '+fmtPct(pct(par[1],total));
+    var tk=document.createElement('div');tk.className='tk';
+    var i=document.createElement('i');i.style.width=pct(par[1],maior).toFixed(2)+'%';
+    tk.appendChild(i);
+    it.appendChild(nm);it.appendChild(qt);it.appendChild(tk);
+    box.appendChild(it);
+  });
+  if(lista.length>limite){
+    var mais=document.createElement('div');mais.className='pmais';
+    mais.textContent='+ '+(lista.length-limite)+' outras categorias';
+    box.appendChild(mais);
+  }
+}
+function mudaAba(aba,btn){
+  abaAtiva=aba;
+  document.querySelectorAll('.aba').forEach(function(b){b.classList.toggle('on',b===btn)});
+  var lbl={todos:'Exportar CSV',pendentes:'Exportar pendentes',classificados:'Exportar classificados'};
+  document.getElementById('btnExp').textContent=lbl[aba];
+  filtra();
+}
+function filtra(){
+  var q=document.getElementById('busca').value.toLowerCase();
+  rows.forEach(function(r){
+    var okBusca=r.getAttribute('data-busca').indexOf(q)>-1;
+    var temCat=r.querySelector('.cat').value.trim()!=='';
+    var okAba=abaAtiva==='todos'||(abaAtiva==='pendentes'?!temCat:temCat);
+    r.style.display=(okBusca&&okAba)?'':'none';
+  });
+}
+function exportaCSV(){
+  var out=['Fornecedor;CPF/CNPJ;Qtd Lancamentos;Categoria Financeira;Descricao'];
+  rows.forEach(function(r){
+    var temCat=r.querySelector('.cat').value.trim()!=='';
+    if(abaAtiva==='pendentes'&&temCat)return;
+    if(abaAtiva==='classificados'&&!temCat)return;
+    var t=r.querySelectorAll('td');
+    function tx(el){return el.textContent.replace('—','').trim().replace(/;/g,',')}
+    out.push([tx(t[1]),tx(t[2]),tx(t[3]),
+      r.querySelector('.cat').value.replace(/;/g,','),r.querySelector('.desc').value.replace(/;/g,',')].join(';'));
+  });
+  baixa('fornecedores_'+abaAtiva+'.csv','\ufeff'+out.join('\n'));
+}
+var dlReady=(window.claude&&window.claude.use)?window.claude.use('downloads')['catch'](function(){return null}):Promise.resolve(null);
+function aviso(msg){
+  var el=document.getElementById('prog');
+  el.textContent=msg;
+  setTimeout(atualiza,3000);
+}
+function baixa(nome,txt){
+  dlReady.then(function(dl){
+    if(dl)return dl.save({filename:nome,data:txt}).then(function(){aviso('CSV exportado: '+nome)});
+    var blob=new Blob([txt],{type:'text/csv;charset=utf-8'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=nome;
+    a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href)},2000);
+  })['catch'](function(e){
+    if(e&&e.code==='declined')return atualiza();
+    aviso('Não foi possível exportar o CSV. Tente novamente.');
+  });
+}
+document.getElementById('busca').addEventListener('input',filtra);
+document.addEventListener('input',function(e){
+  if(e.target.classList.contains('cat')||e.target.classList.contains('desc')){
+    marcaSujo(e.target.closest('tr'));
+    atualiza();rascunho();filtra();
+  }
+});
+carrega();
+</script>
+
+</body>
+</html>
