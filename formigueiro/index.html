@@ -495,6 +495,10 @@ body.locked .app,body.locked .bottom{filter:blur(14px);pointer-events:none;user-
 .fts.cover .pby .m-be{height:30px}
 .fts.cover{position:relative}
 @media(max-width:760px){.fts.cover .pby{right:14px;bottom:10px;font-size:9px}.fts.cover .pby .m-be{height:20px}}
+.sairbtn{margin-left:8px}
+.sairside{display:flex;align-items:center;gap:10px;margin:10px 0 0;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(255,248,230,.35);background:none;color:var(--cream);font-weight:600;font-size:14px;cursor:pointer;width:100%}
+.sairside:hover{background:rgba(255,248,230,.1)}
+@media(max-width:900px){.sairside{display:none}}
 </style>
 </head>
 <body>
@@ -989,6 +993,11 @@ render();
 <script>/* trava por PIN */
 (function () {
   const PIN = "2026", K = "formigueiro-pin-ok";
+  /* botão sair: no topo e na barra lateral */
+  const sair = () => { try { sessionStorage.removeItem(K); } catch (x) {} location.hash = ""; location.reload(); };
+  const ic = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>';
+  const top = document.querySelector(".top"); if (top) { const b = document.createElement("button"); b.className = "btn ghost sm sairbtn"; b.innerHTML = ic + " Sair"; b.onclick = sair; top.appendChild(b); }
+  const side = document.querySelector(".side"); if (side) { const b = document.createElement("button"); b.className = "sairside"; b.innerHTML = ic + "<span>Sair</span>"; b.onclick = sair; const nav = side.querySelector(".nav"); nav.after(b); }
   let ok = false; try { ok = sessionStorage.getItem(K) === "1"; } catch (e) {}
   if (ok) return;
   const d = document.createElement("div");
