@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Formosa Flores · Entrega de Materiais e Manuais</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--w:#4d161f;--w2:#5a1f29;--w3:#3b0f17;--p:#dd5374;--pl:#f3c3cf;--c:#fef1e1;--c2:#f8e6d3;--ink:#3b0f17}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Jost,sans-serif;background:var(--c);color:var(--ink)}
+h1,h3,h4{font-family:Jost,sans-serif;font-weight:500;letter-spacing:-.01em}em{color:var(--p);font-style:normal;font-weight:300}
+.hero{background:var(--w);color:var(--c);position:relative;overflow:hidden;padding:48px 6vw 0;min-height:0}
+.hero:before{content:"FORMOSA";position:absolute;left:-2vw;bottom:-6vw;font:300 22vw Jost;letter-spacing:.05em;color:rgba(255,255,255,.035);white-space:nowrap}
+.top{display:flex;justify-content:space-between;align-items:center;font-size:11px;letter-spacing:.35em;text-transform:uppercase;color:var(--pl)}
+.top img{height:58px}
+.hw{display:block;max-width:720px;padding-bottom:90px;gap:4vw;align-items:center;margin-top:40px;position:relative;z-index:1}
+.kick{font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:var(--p);font-weight:600}
+.hero h1{font-size:clamp(38px,5vw,68px);line-height:1.05;margin:18px 0 22px}
+.hero p.l{font-size:17px;font-weight:300;line-height:1.6;max-width:460px;color:#f1d9d0}
+.stats{display:flex;gap:36px;margin:34px 0 60px}.stats div{border-top:1px solid rgba(254,241,225,.25);padding-top:12px}.stats b{font:300 36px Jost;display:block}.stats span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--pl)}
+.fan{position:relative;height:520px}
+.f{position:absolute;width:200px;box-shadow:0 22px 40px rgba(0,0,0,.45);border-radius:3px;transition:transform .4s}
+.f0{left:4%;top:120px;transform:rotate(-12deg)}.f1{left:20%;top:50px;width:260px;transform:rotate(-6deg)}.f2{left:40%;top:20px;transform:rotate(2deg)}.f3{left:62%;top:60px;transform:rotate(9deg)}
+.f4{left:12%;top:300px;transform:rotate(-4deg)}.f5{left:34%;top:270px;transform:rotate(5deg)}.f6{left:55%;top:290px;transform:rotate(-3deg)}.f7{left:66%;top:330px;width:250px;transform:rotate(7deg)}
+.fan:hover .f{transform:rotate(0) scale(1.03)}
+nav{position:sticky;top:0;z-index:5;background:var(--w3);display:flex;gap:4px;overflow-x:auto;padding:0 6vw}nav a{color:var(--c);text-decoration:none;font-size:13px;padding:16px 14px;white-space:nowrap;letter-spacing:.04em}nav a b{color:var(--p);margin-right:8px}nav a:hover{background:var(--w)}
+main{padding:30px 6vw 80px}
+.st{padding:56px 0 20px;border-bottom:1px solid #ead2c0}
+.sh{display:flex;gap:26px;align-items:flex-end;margin-bottom:30px}.num{font:200 84px/0.8 Jost;color:var(--p)}
+.sh h3{font-size:36px;margin:6px 0 6px}.sh p{color:#7a4a50;font-weight:300}.cnt{margin-left:auto;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#8a5a60;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:26px}
+.card{background:#fff;border:0;text-align:left;cursor:pointer;border-radius:4px;overflow:hidden;font:inherit;color:inherit;box-shadow:0 1px 0 #ead2c0;transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-4px);box-shadow:0 18px 36px rgba(77,22,31,.18)}
+.th{background:var(--w);height:210px;display:flex;align-items:center;justify-content:center;padding:18px}.th img{max-width:100%;max-height:100%;box-shadow:0 8px 18px rgba(0,0,0,.35)}
+.ci{padding:18px 20px 22px;border-top:3px solid var(--p)}.dt{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--p);font-weight:600}.ci h4,.ed h4{font-size:19px;margin:8px 0 6px;line-height:1.2}.ci p,.ed p{font-size:14px;color:#7a4a50;font-weight:300;line-height:1.45}
+.eds{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}.ed{background:var(--c2);padding:20px;border-left:3px solid var(--w)}
+footer{background:var(--w);color:var(--pl);text-align:center;padding:40px;font-size:12px;letter-spacing:.25em;text-transform:uppercase}footer img{height:50px;display:block;margin:0 auto 14px}
+#v{position:fixed;inset:0;background:rgba(40,8,14,.96);z-index:20;display:none;flex-direction:column}#v.on{display:flex}
+.vb{display:flex;align-items:center;gap:16px;padding:14px 22px;color:var(--c)}.vb h4{font-size:20px;flex:1}.vb button{background:none;border:1px solid rgba(254,241,225,.35);color:var(--c);padding:8px 14px;border-radius:30px;cursor:pointer;font:500 13px Jost}.vb button:hover{background:var(--p);border-color:var(--p)}
+.vs{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;padding:0 70px}.vs img{max-width:100%;max-height:100%;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.ar{position:absolute;top:50%;background:var(--p);color:#fff;border:0;width:46px;height:46px;border-radius:50%;font-size:22px;cursor:pointer}.ar.a{left:14px}.ar.b{right:14px}
+.strip{display:flex;gap:8px;overflow-x:auto;padding:14px 22px}.strip img{height:64px;opacity:.45;cursor:pointer;border:2px solid transparent}.strip img.on{opacity:1;border-color:var(--p)}
+@media(max-width:860px){.hw{grid-template-columns:1fr}.fan{height:360px;transform:scale(.7);transform-origin:top left;width:140%}.sh{flex-wrap:wrap}.num{font-size:56px}.cnt{margin-left:0}.vs{padding:0 10px}}
+</style></head><body><div id="lock"><div class="lk"><div class="lg">FORMOSA<span>FLORES</span></div><span class="kick">Área do cliente</span><h1>Materiais <em>&amp; Manuais</em></h1><p>Digite a senha para acessar a entrega.</p><form id="lf"><input id="pw" type="password" placeholder="Senha" autocomplete="current-password" autofocus><button>Entrar</button></form><small id="er"></small></div></div><div id="app"></div>
+<style>#lock{min-height:100vh;background:var(--w);color:var(--c);display:flex;align-items:center;justify-content:center;padding:24px}.lk{max-width:420px;width:100%;text-align:center}.lg{font:400 30px Jost;letter-spacing:.12em;margin-bottom:40px}.lg span{display:block;font-size:9px;letter-spacing:.8em;color:var(--pl);margin-top:4px}.lk h1{font-size:44px;margin:14px 0 10px}.lk p{color:#f1d9d0;font-weight:300;margin-bottom:26px}#lf{display:flex;gap:8px}#pw{flex:1;padding:14px 18px;border-radius:30px;border:1px solid rgba(254,241,225,.3);background:rgba(0,0,0,.15);color:var(--c);font:400 15px Jost;outline:none}#pw:focus{border-color:var(--p)}#lf button{background:var(--p);color:#fff;border:0;border-radius:30px;padding:0 24px;font:500 14px Jost;cursor:pointer}#er{display:block;margin-top:14px;color:var(--pl);min-height:18px}</style>
+<script>
+const SALT=Uint8Array.from(atob("LCQ292ntp1kks8uXDRbfIg=="),c=>c.charCodeAt(0)),IT=250000;let KEY;const cache={};
+async function dec(buf){const b=new Uint8Array(buf);return crypto.subtle.decrypt({name:'AES-GCM',iv:b.slice(0,12)},KEY,b.slice(12))}
+async function L(el,n){el.dataset.src=n;if(!cache[n])cache[n]=fetch('img/'+n+'.enc').then(r=>r.arrayBuffer()).then(dec).then(d=>URL.createObjectURL(new Blob([d],{type:n=='logo'?'image/png':'image/jpeg'})));const u=await cache[n];if(el.dataset.src===n)el.src=u}
+document.getElementById('lf').onsubmit=async e=>{e.preventDefault();const er=document.getElementById('er');er.textContent='Abrindo...';
+try{const bk=await crypto.subtle.importKey('raw',new TextEncoder().encode(document.getElementById('pw').value),'PBKDF2',false,['deriveKey']);
+KEY=await crypto.subtle.deriveKey({name:'PBKDF2',salt:SALT,iterations:IT,hash:'SHA-256'},bk,{name:'AES-GCM',length:256},false,['decrypt']);
+const a=JSON.parse(new TextDecoder().decode(await dec(await (await fetch('app.enc')).arrayBuffer())));
+document.getElementById('lock').remove();const app=document.getElementById('app');app.innerHTML=a.body;
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){io.unobserve(x.target);L(x.target,x.target.dataset.src)}}),{rootMargin:'400px'});
+app.querySelectorAll('img[data-src]').forEach(i=>io.observe(i));(new Function('L',a.script))(L);}
+catch(x){er.textContent='Senha incorreta. Tente de novo.'}};
+</script></body></html>
