@@ -114,7 +114,7 @@ input:focus,select:focus,.btn:focus-visible,.tab:focus-visible{outline:3px solid
 <p class="lead">Ele precisa da moto para viver. Mas comprar uma está fora do alcance da maioria.</p>
 </div>
 <div class="grid" style="--m:440px;gap:8px 56px">
-<div class="row"><span>Moto zero km</span><span class="bb bl" style="font-size:34px">R$ 12–22 mil</span></div>
+<div class="row"><span>Moto zero km</span><span class="bb bl" style="font-size:34px">Fora do alcance</span></div>
 <div class="row"><span>Crédito para autônomo</span><span class="bb bl" style="font-size:34px">Escasso e caro</span></div>
 <div class="row"><span>Tempo até começar a rodar</span><span class="bb bl" style="font-size:34px">Semanas ou meses</span></div>
 <div class="row"><span>Moto parada</span><span class="bb bl" style="font-size:34px">Renda zero</span></div>
@@ -258,7 +258,7 @@ input:focus,select:focus,.btn:focus-visible,.tab:focus-visible{outline:3px solid
 <h2 class="bb h2">Três fontes de receita na mesma frota</h2>
 <div class="grid">
 <div class="card cw" style="border-radius:16px;padding:28px"><span class="bb" style="background:var(--o);color:var(--n);font-size:24px;padding:4px 10px 0">01</span><h3 class="bb bl" style="margin:14px 0 8px;font-size:32px">Aluguel recorrente</h3><p style="margin:0;line-height:1.5">Pagamento periódico e antecipado. A frota gera caixa continuamente.</p></div>
-<div class="card cw" style="border-radius:16px;padding:28px"><span class="bb" style="background:var(--o);color:var(--n);font-size:24px;padding:4px 10px 0">02</span><h3 class="bb bl" style="margin:14px 0 8px;font-size:32px">Adesão e gestão</h3><p style="margin:0;line-height:1.5">Taxa de adesão paga pelo locatário a cada novo contrato. Na Loja Full, também a renda com a gestão de frotas de investidores.</p></div>
+<div class="card cw" style="border-radius:16px;padding:28px"><span class="bb" style="background:var(--o);color:var(--n);font-size:24px;padding:4px 10px 0">02</span><h3 class="bb bl" style="margin:14px 0 8px;font-size:32px">Taxa de adesão</h3><p style="margin:0;line-height:1.5">Taxa de adesão paga pelo locatário a cada novo contrato. Mais caixa logo na entrada.</p></div>
 <div class="card cw" style="border-radius:16px;padding:28px"><span class="bb" style="background:var(--o);color:var(--n);font-size:24px;padding:4px 10px 0">03</span><h3 class="bb bl" style="margin:14px 0 8px;font-size:32px">Valor do ativo</h3><p style="margin:0;line-height:1.5">A moto é patrimônio físico, com liquidez e revenda ao fim do ciclo.</p></div>
 </div>
 <p style="margin:0;text-align:center;font-weight:600;font-style:italic;font-size:18px">O cliente depende da moto para trabalhar. A demanda se renova sozinha.</p>
@@ -308,14 +308,8 @@ input:focus,select:focus,.btn:focus-visible,.tab:focus-visible{outline:3px solid
 <div class="col" style="gap:12px">
 <h3 class="bb" style="margin:0;font-size:36px">Linha de planos</h3>
 <div id="fPlans" class="col" style="gap:12px"></div>
-<p style="margin:4px 0 0;font-size:13px;font-style:italic;color:var(--sky)">Valores aproximados. Referência Yamaha Factor. Investimento já com capital de giro.</p>
+<p style="margin:4px 0 0;font-size:13px;font-style:italic;color:var(--sky)">Valores aproximados. Investimento total já com capital de giro. A composição completa está na COF.</p>
 </div>
-</div>
-
-<div class="cw col" style="border-radius:18px;padding:clamp(22px,3vw,36px)">
-<div><div id="fInvTag" class="ot" style="font-weight:800;font-size:13px;letter-spacing:.1em;text-transform:uppercase"></div><h3 class="bb bl" style="margin:4px 0 0;font-size:clamp(38px,4vw,54px)">Compare o investimento</h3></div>
-<div class="tbl"><div id="fTable"></div></div>
-<p id="fInvNote" style="margin:0;font-size:13px;color:var(--g)"></p>
 </div>
 
 <div class="col">
@@ -328,11 +322,10 @@ input:focus,select:focus,.btn:focus-visible,.tab:focus-visible{outline:3px solid
 <h3 class="bb" style="margin:0;font-size:clamp(40px,4.4vw,60px)">Taxas da operação</h3>
 <div class="grid" style="--m:250px;gap:12px">
 <div class="card cw" style="text-align:center;padding:20px"><div class="bb bl" style="font-size:30px">Royalties <span id="fRoy"></span></div><p id="fRoyNote" style="margin:4px 0 0;font-size:13px"></p></div>
-<div class="card cw" style="text-align:center;padding:20px"><div class="bb bl" style="font-size:30px">Gestão ~R$ 300</div><p style="margin:4px 0 0;font-size:13px">Por moto, por mês</p></div>
-<div class="card cw" style="text-align:center;padding:20px"><div class="bb bl" style="font-size:30px">Propaganda ~R$ 290</div><p style="margin:4px 0 0;font-size:13px">Fundo da marca, por mês</p></div>
-<div class="card cw" style="text-align:center;padding:20px"><div class="bb bl" style="font-size:30px">Sistema ~R$ 250</div><p style="margin:4px 0 0;font-size:13px">Contratos, pagamentos e frota num só lugar, por mês</p></div>
-<div class="card cw" style="text-align:center;padding:20px"><div class="bb bl" style="font-size:30px">Rastreio e TAG ~R$ 40</div><p style="margin:4px 0 0;font-size:13px">Por moto, por mês</p></div>
+<div class="card cw" style="text-align:center;padding:20px"><div class="bb bl" style="font-size:30px">Fundo de propaganda</div><p style="margin:4px 0 0;font-size:13px">Fortalece a marca em toda a rede</p></div>
 <div class="card cw" style="text-align:center;padding:20px"><div class="bb bl" style="font-size:30px">Contrato de 5 anos</div><p style="margin:4px 0 0;font-size:13px">Com direito a renovação</p></div>
+</div>
+<p style="margin:0;font-size:13px;color:var(--sky)">As demais taxas mensais (gestão, sistema e rastreio) estão detalhadas na COF.</p>
 </div>
 </div>
 
@@ -450,21 +443,17 @@ const F={
 op:{nome:'Operador',tag:'Sem ponto comercial',photo:'https://lh3.googleusercontent.com/d/1y0HDmDroOeoLNUeKb8Za2yFhiXd8Eefl',alt:'Entregador com moto alugada da Zoom Loca',
 desc:'A porta de entrada mais leve da rede. Comece com 5 motos, sem loja, e cresça até 20 operando com o método Zoom Loca. Passou de 20? É hora de migrar para a Loja Full.',
 plans:[['Operador · 5','~R$ 144 mil','~R$ 11 mil','9%'],['Operador · 10','~R$ 266 mil','~R$ 22 mil','8%'],['Operador · 20','~R$ 498 mil','~R$ 44 mil','7%']],
-invTag:'Modelo Operador · sem ponto comercial',heads:['5 motos','10 motos','20 motos'],
-rows:[['Taxa de franquia','R$ 25 mil','R$ 35 mil','R$ 45 mil'],['Motos Yamaha Factor zero km','~R$ 99,5 mil','~R$ 196 mil','~R$ 386 mil'],['Documentação e emplacamento','~R$ 7,5 mil','~R$ 15 mil','~R$ 30 mil'],['Vacina antifurto, rastreador e TAG','~R$ 4,5 mil','~R$ 9 mil','~R$ 18 mil'],['Abertura da empresa','~R$ 2,2 mil','~R$ 2,2 mil','~R$ 2,2 mil'],['Capital de giro','~R$ 4,9 mil','~R$ 8,7 mil','~R$ 16,5 mil']],
-tot:['~R$ 144 mil','~R$ 266 mil','~R$ 498 mil'],invNote:'Valores aproximados. Referência Yamaha Factor. Não inclui garagem ou pátio para guardar a frota.',
-nums:[['Operador 5 motos','~R$ 11 mil','~R$ 1,6 mil','~R$ 3,2 mil','~R$ 6,2 mil','~56%','~4,3%','~24 m'],['Operador 10 motos','~R$ 22 mil','~R$ 3,1 mil','~R$ 5,6 mil','~R$ 13,4 mil','~61%','~5,0%','~20 m'],['Operador 20 motos','~R$ 44 mil','~R$ 6,1 mil','~R$ 10,4 mil','~R$ 27,7 mil','~63%','~5,6%','~18 m']],
+
+nums:[['Operador 5 motos','~R$ 11 mil','','','~R$ 6,2 mil','~56%','~4,3%','~24 m'],['Operador 10 motos','~R$ 22 mil','','','~R$ 13,4 mil','~61%','~5,0%','~20 m'],['Operador 20 motos','~R$ 44 mil','','','~R$ 27,7 mil','~63%','~5,6%','~18 m']],
 numNote:'Valores aproximados. Frota toda alugada. Não inclui garagem nem pró-labore. Não é promessa de resultado.',
 roy:'9% a 7%',royNote:'Conforme o plano, só sobre o aluguel das motos',
 perfil:['Quer tocar o próprio negócio, começando menor','Vai se dedicar à operação ou tem um sócio','Tem ou pode alugar garagem para a frota','Tem capital a partir de ~R$ 144 mil','Quer crescer até virar uma Loja Full']},
 loja:{nome:'Loja Full',tag:'Ponto de ~100 m²',photo:'https://lh3.googleusercontent.com/d/1NIHFXXr9ZfX12GsX4hSbDe-UYn3oR2Lv',alt:'Fachada de loja Zoom Loca',
 desc:'O formato completo da marca. Loja montada com o método Zoom Loca, frota de 30 ou 50 motos zero km e equipe para atender o entregador. Inclui projeto da loja e pacote de criativos.',
 plans:[['Loja Full · 30','~R$ 820 mil','~R$ 77 mil','6%'],['Loja Full · 50','~R$ 1,3 mi','~R$ 121 mil','5%']],
-invTag:'Modelo Loja Full · ponto de ~100 m²',heads:['Loja 30 motos','Loja 50 motos'],
-rows:[['Taxa de franquia','R$ 50 mil','R$ 80 mil'],['Motos Yamaha Factor zero km','~R$ 570 mil','~R$ 935 mil'],['Documentação e emplacamento','~R$ 45 mil','~R$ 75 mil'],['Vacina antifurto, rastreador e TAG','~R$ 27 mil','~R$ 45 mil'],['Obra civil + implantação (~100 m²)','~R$ 100 mil','~R$ 100 mil'],['Letreiro e abertura da empresa','~R$ 8 mil','~R$ 8 mil'],['Capital de giro','~R$ 20 mil','~R$ 60 mil']],
-tot:['~R$ 820 mil','~R$ 1,3 mi'],invNote:'Valores aproximados. Referência Yamaha Factor. Não inclui o ponto comercial (aluguel, luvas e garantias).',
-nums:[['Loja 30 motos','~R$ 77 mil','~R$ 10 mil','~R$ 25 mil','~R$ 41 mil','~54%','~5,0%','~20 m'],['Loja 50 motos','~R$ 121 mil','~R$ 15 mil','~R$ 35 mil','~R$ 71 mil','~59%','~5,5%','~18 m']],
-numNote:'Valores aproximados. Frota toda alugada, com gestão de frotas de investidores. Não é promessa de resultado.',
+
+nums:[['Loja 30 motos','~R$ 77 mil','','','~R$ 41 mil','~54%','~5,0%','~20 m'],['Loja 50 motos','~R$ 121 mil','','','~R$ 71 mil','~59%','~5,5%','~18 m']],
+numNote:'Valores aproximados. Frota toda alugada. Não é promessa de resultado.',
 roy:'6% | 5%',royNote:'Loja 30 | Loja 50, só sobre o aluguel das motos',
 perfil:['Quer ter o próprio negócio com marca forte','Tem experiência com motos, comércio ou gestão','Vai tocar a loja ou tem um sócio para isso','Tem capital a partir de ~R$ 820 mil','Busca renda recorrente e patrimônio']}};
 const $=id=>document.getElementById(id);
@@ -472,11 +461,7 @@ function render(k){const f=F[k];
 document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===k));
 $('fPhoto').src=f.photo;$('fPhoto').alt=f.alt;$('fTag').textContent=f.tag;$('fNome').textContent=f.nome;$('fDesc').textContent=f.desc;
 $('fPlans').innerHTML=f.plans.map(p=>`<div class="plan"><div><small>Modelo</small><span class="bb ol" style="font-size:28px">${p[0]}</span></div><div><small>Investimento</small><b>${p[1]}</b></div><div><small>Receita média/mês</small><b>${p[2]}</b></div><div><small>Royalties</small><b>${p[3]}</b></div></div>`).join('');
-const cols=`grid-template-columns:2fr repeat(${f.heads.length},1fr)`;
-$('fInvTag').textContent=f.invTag;
-$('fTable').innerHTML=`<div class="tr h" style="${cols}"><span style="font-size:13px;color:#4A4F5C;font-weight:700">Item</span>${f.heads.map(h=>`<span>${h}</span>`).join('')}</div>`+f.rows.map(r=>`<div class="tr" style="${cols}"><span style="font-weight:600">${r[0]}</span>${r.slice(1).map(c=>`<span>${c}</span>`).join('')}</div>`).join('')+`<div class="tr tot" style="${cols}"><span>Investimento total</span>${f.tot.map(t=>`<span style="text-align:right">${t}</span>`).join('')}</div>`;
-$('fInvNote').textContent=f.invNote;
-$('fNums').innerHTML=f.nums.map(n=>`<div class="num"><div class="bb ol" style="font-size:30px">${n[0]}</div><div class="l"><span>Faturamento/mês</span><b>${n[1]}</b></div><div class="l"><span>(–) Custos variáveis</span><b>${n[2]}</b></div><div class="l"><span>(–) Despesas fixas</span><b>${n[3]}</b></div><div style="display:flex;justify-content:space-between;align-items:baseline"><b>Resultado/mês</b><span class="bb" style="font-size:40px">${n[4]}</span></div><div class="kpis"><div><small>Lucratividade</small><b>${n[5]}</b></div><div><small>Rentabilidade</small><b>${n[6]}</b></div><div><small>Payback</small><b>${n[7]}</b></div></div></div>`).join('');
+$('fNums').innerHTML=f.nums.map(n=>`<div class="num"><div class="bb ol" style="font-size:30px">${n[0]}</div><div class="l"><span>Faturamento/mês</span><b>${n[1]}</b></div><div style="display:flex;justify-content:space-between;align-items:baseline"><b>Resultado/mês</b><span class="bb" style="font-size:40px">${n[4]}</span></div><div class="kpis"><div><small>Lucratividade</small><b>${n[5]}</b></div><div><small>Rentabilidade</small><b>${n[6]}</b></div><div><small>Payback</small><b>${n[7]}</b></div></div></div>`).join('');
 $('fNumNote').textContent=f.numNote+' Rentabilidade = resultado mensal ÷ investimento total.';
 $('fRoy').textContent=f.roy;$('fRoyNote').textContent=f.royNote;
 $('fPerfil').innerHTML=f.perfil.map(p=>`<li>${p}</li>`).join('');}
