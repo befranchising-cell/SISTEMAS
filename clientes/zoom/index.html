@@ -12,9 +12,9 @@
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Montserrat,Arial,sans-serif;color:var(--t);overflow-x:hidden}
 img{max-width:100%;display:block}a{color:inherit}
 .bb{font-family:'Bebas Neue',Impact,sans-serif;font-weight:400;line-height:.95;letter-spacing:.01em}
-.w{max-width:1240px;margin:0 auto;padding:clamp(64px,8vw,110px) 24px;position:relative}
+.w{max-width:1200px;margin:0 auto;padding:clamp(72px,9vw,128px) 24px;position:relative}
 .sec{position:relative;overflow:hidden}.blue{background:var(--b);color:#fff}.navy{background:var(--bm);color:#fff}.soft{background:#F4F7FC}
-.oo{position:absolute;pointer-events:none;height:auto}
+.oo{position:absolute;pointer-events:none;height:auto;opacity:.12!important}.sec:not(.blue):not(.navy) .oo{display:none}
 .h2{margin:0;font-size:clamp(50px,6vw,80px)}.ot{color:var(--ot)}.ol{color:var(--ol)}.bl{color:var(--b)}
 .lead{font-size:clamp(17px,1.7vw,20px);line-height:1.55;margin:0}
 .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--m,300px)),1fr))}
@@ -22,11 +22,11 @@ img{max-width:100%;display:block}a{color:inherit}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:14px 28px;border-radius:999px;font-weight:800;font-size:16px;text-decoration:none;border:0;cursor:pointer;font-family:inherit;transition:transform .15s,background .15s}
 .btn-o{background:var(--o);color:var(--n)}.btn-o:hover{background:var(--ol);transform:translateY(-1px)}
 .btn-g{border:2px solid #fff;color:#fff;background:transparent}.btn-g:hover{background:rgba(255,255,255,.12)}
-.card{border-radius:14px;padding:24px}.cb{background:var(--b);color:#fff}.cb h3{margin:8px 0 6px;font-size:30px;color:var(--ol)}.cb p{margin:0;font-size:15px;color:#EAF0FB;line-height:1.5}
+.card{border-radius:14px;padding:24px}.cb{background:#fff;color:var(--t);border:1px solid #E3E9F4;box-shadow:0 1px 2px rgba(16,24,40,.04)}.cb h3{margin:8px 0 6px;font-size:28px;color:var(--b)}.cb p{margin:0;font-size:15px;color:var(--g);line-height:1.55}.cb .ol{color:var(--b)}
 .cw{background:#fff;color:var(--t)}
 .chip{display:inline-block;background:var(--o);color:var(--n);font-weight:800;font-size:12px;letter-spacing:.12em;text-transform:uppercase;padding:7px 12px;border-radius:6px}
-.row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:2px solid var(--line);padding:16px 0}
-.tl{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:baseline;border-bottom:1px solid var(--line);padding:14px 0}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid #E3E9F4;padding:16px 0}
+.tl{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:baseline;border-bottom:1px solid #E3E9F4;padding:14px 0}
 header{position:sticky;top:0;z-index:50;background:var(--b);border-bottom:1px solid rgba(255,255,255,.12)}
 header nav{max-width:1240px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .links{display:flex;gap:26px;font-size:14px;font-weight:600}.links a{color:#fff;text-decoration:none}.links a:hover{color:var(--ol)}
@@ -198,12 +198,12 @@ input:focus,select:focus,.btn:focus-visible,.tab:focus-visible{outline:3px solid
 <div class="card cw" style="border-radius:22px;padding:clamp(28px,4vw,44px);max-width:460px;width:100%;justify-self:center">
 <h3 class="bb bl" style="margin:0 0 12px;font-size:40px">O que está incluído</h3>
 <ul style="list-style:none;margin:0;padding:0;color:var(--b);font-weight:500">
-<li style="padding:13px 0;border-bottom:1px solid var(--line)">Motos zero km</li>
-<li style="padding:13px 0;border-bottom:1px solid var(--line)">Plataforma de gestão digital</li>
-<li style="padding:13px 0;border-bottom:1px solid var(--line)">Documentação e emplacamento</li>
-<li style="padding:13px 0;border-bottom:1px solid var(--line)">Rastreador + bloqueio remoto</li>
-<li style="padding:13px 0;border-bottom:1px solid var(--line)">Projeto da loja e pacote de criativos</li>
-<li style="padding:13px 0;border-bottom:1px solid var(--line)">Treinamento e suporte operacional</li>
+<li style="padding:13px 0;border-bottom:1px solid #E3E9F4">Motos zero km</li>
+<li style="padding:13px 0;border-bottom:1px solid #E3E9F4">Plataforma de gestão digital</li>
+<li style="padding:13px 0;border-bottom:1px solid #E3E9F4">Documentação e emplacamento</li>
+<li style="padding:13px 0;border-bottom:1px solid #E3E9F4">Rastreador + bloqueio remoto</li>
+<li style="padding:13px 0;border-bottom:1px solid #E3E9F4">Projeto da loja e pacote de criativos</li>
+<li style="padding:13px 0;border-bottom:1px solid #E3E9F4">Treinamento e suporte operacional</li>
 </ul>
 <a href="#contato" class="btn btn-o" style="margin-top:22px;width:100%">Quero saber mais</a>
 </div>
